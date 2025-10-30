@@ -24,3 +24,11 @@ npm install
 # Start the development server
 
 npm run dev
+
+## 🧭 How to Use It
+
+1. **Paste or write** your JSON inside the text area on the **left side** of the screen.
+2. Click on **“Generate Tree”** — your JSON structure will be visualized as a tree on the **right side**.
+3. Use the **search bar** on top to find any node by its JSON path.
+   - Your search string **must start with `$`**.
+   - **Example:** `$.user.address.city`
