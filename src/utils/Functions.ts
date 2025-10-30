@@ -60,7 +60,13 @@ export function ystructuredLayout(jsonData: JSONObject) {
 
     const xSpacing = 180; // horizontal distance between siblings
     const ySpacing = 120; // vertical distance between levels
-
+    const COLORS = {
+        object: "#a855f7",
+        array: "#10b981",
+        primitive: "#f97316",
+        root: "#2563eb",
+        key: "#3b82f6",
+    };
     // Helper to create nodes
     function createNode(label: string, x: number, y: number, color: string, path: string) {
         const id = `node-${nodeId++}`;
@@ -83,9 +89,7 @@ export function ystructuredLayout(jsonData: JSONObject) {
 
     // Recursive traversal
     function traverse(value: JSONValue, x: number, y: number, parentId: string | null, path: string) {
-        const colorKey = "#60a5fa";   // key = blue
-        const colorValue = "#fbbf24"; // primitive value = orange
-        const colorRoot = "#818cf8";  // root or object key = purple
+
 
         if (typeof value === "object" && value !== null) {
             const entries = Array.isArray(value)
@@ -99,7 +103,7 @@ export function ystructuredLayout(jsonData: JSONObject) {
             // create parent node (if root)
             const parentNodeId =
                 parentId === null
-                    ? createNode("root", x, y, colorRoot, "$")
+                    ? createNode("root", x, y, COLORS["root"], "$")
                     : parentId;
 
             // go through each key/value
@@ -107,6 +111,12 @@ export function ystructuredLayout(jsonData: JSONObject) {
                 const keyX = startX + index * xSpacing; // horizontal sibling spread
                 const keyY = y + ySpacing; // one level deeper vertically
                 const newPath = Array.isArray(value) ? `${path}${key}` : `${path}.${key}`
+                let colorKey = COLORS["key"]
+                if (Array.isArray(val)) {
+                    colorKey = COLORS["array"]
+                } else if (typeof val == "object" && val !== null) {
+                    colorKey = COLORS["object"]
+                }
                 const keyId = createNode(String(key), keyX, keyY, colorKey, newPath);
 
                 edges.push({
@@ -121,7 +131,7 @@ export function ystructuredLayout(jsonData: JSONObject) {
                     traverse(val, keyX, keyY + ySpacing, keyId, newPath);
                 } else {
                     // primitive → value node directly below key
-                    const valId = createNode(String(val), keyX, keyY + ySpacing, colorValue, newPath);
+                    const valId = createNode(String(val), keyX, keyY + ySpacing, COLORS["primitive"], newPath);
                     edges.push({
                         id: `edge-${keyId}-${valId}`,
                         source: keyId,
