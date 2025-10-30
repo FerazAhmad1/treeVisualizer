@@ -27,7 +27,7 @@ export const TreeView: React.FC<TreeViewProps> = ({
 }) => {
   return (
     <>
-      <div>
+      <div className="h-[80%]">
         <ReactFlow
           nodes={nodes}
           edges={edges}
