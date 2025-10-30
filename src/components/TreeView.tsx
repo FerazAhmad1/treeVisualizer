@@ -27,14 +27,16 @@ export const TreeView: React.FC<TreeViewProps> = ({
 }) => {
   return (
     <>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        fitView={fitView}
-      />
+      <div>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          fitView={fitView}
+        />
+      </div>
     </>
   );
 };

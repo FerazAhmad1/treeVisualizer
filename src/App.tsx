@@ -14,7 +14,7 @@ function App() {
   );
   return (
     <>
-      <div className="flex h-dvh gap-10 ">
+      <div className="flex h-dvh  gap-10 ">
         <JsonInput handleJsonInput={handleJsonInput} />
         <NodeAndSearch jsonInput={jsonInput} />
       </div>
