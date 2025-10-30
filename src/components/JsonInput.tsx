@@ -1,5 +1,7 @@
 import { useState } from "react";
 import type { JSONObject } from "../utils/types";
+import Toast from "./Toast";
+import { toast } from "react-toastify";
 interface JsonInputProps {
   handleJsonInput: (value: JSONObject) => void;
 }
@@ -15,20 +17,25 @@ const JsonInput: React.FC<JsonInputProps> = ({ handleJsonInput }) => {
       console.log(value, "DDDDDDDDDDDD");
       handleJsonInput(value);
     } catch (error) {
+      toast.error("Invalid Json");
       console.log(error);
+      return;
     }
   };
   return (
-    <div className="flex  flex-col w-[400px] h-full  ">
-      <textarea
-        onChange={changeHandler}
-        className="block flex-1  bg-gray-100 w-[400px]  "
-        value={jsonObject}
-      />
-      <button onClick={clickHandler} className="bg-blue-700 text-white p-2 ">
-        Generate Tree
-      </button>
-    </div>
+    <>
+      <div className="flex  flex-col w-[400px] h-full  ">
+        <textarea
+          onChange={changeHandler}
+          className="block flex-1  bg-gray-100 w-[400px]  "
+          value={jsonObject}
+        />
+        <button onClick={clickHandler} className="bg-blue-700 text-white p-2 ">
+          Generate Tree
+        </button>
+      </div>
+      <Toast />
+    </>
   );
 };
 
