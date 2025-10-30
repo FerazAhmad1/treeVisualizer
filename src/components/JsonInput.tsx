@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { JSONObject } from "../utils/types";
 import Toast from "./Toast";
+import { useCallback } from "react";
 import { toast } from "react-toastify";
 interface JsonInputProps {
   handleJsonInput: (value: JSONObject) => void;
@@ -11,7 +12,7 @@ const JsonInput: React.FC<JsonInputProps> = ({ handleJsonInput }) => {
     console.log(e.target.value);
     setJson(e.target.value);
   };
-  const clickHandler = () => {
+  const clickHandler = useCallback(() => {
     try {
       const value = JSON.parse(jsonObject);
       console.log(value, "DDDDDDDDDDDD");
@@ -21,10 +22,10 @@ const JsonInput: React.FC<JsonInputProps> = ({ handleJsonInput }) => {
       console.log(error);
       return;
     }
-  };
+  }, [jsonObject, handleJsonInput]);
   return (
     <>
-      <div className="flex  flex-col w-[400px] h-full  ">
+      <div className="flex  flex-col w-[400px] ">
         <textarea
           onChange={changeHandler}
           className="block flex-1  bg-gray-100 w-[400px]  "
