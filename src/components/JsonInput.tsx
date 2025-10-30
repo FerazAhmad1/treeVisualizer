@@ -19,13 +19,13 @@ const JsonInput: React.FC<JsonInputProps> = ({ handleJsonInput }) => {
     }
   };
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex  flex-col w-[400px] h-full  ">
       <textarea
         onChange={changeHandler}
-        className="flex-1 block  bg-gray-300 w-[400px] h-[400px] "
+        className="block flex-1  bg-gray-100 w-[400px]  "
         value={jsonObject}
       />
-      <button onClick={clickHandler} className="bg-blue-700 text-white ">
+      <button onClick={clickHandler} className="bg-blue-700 text-white p-2 ">
         Generate Tree
       </button>
     </div>

@@ -3,6 +3,7 @@ import {
   ReactFlow,
   applyNodeChanges,
   applyEdgeChanges,
+  useReactFlow,
   addEdge,
   type Node,
   type NodeChange,
@@ -13,11 +14,15 @@ import {
 import "@xyflow/react/dist/style.css";
 import { getLayoutedElements, ystructuredLayout } from "../utils/Functions";
 import type { JSONObject, TreeViewProps } from "../utils/types";
+import Toast from "./Toast";
+import { toast } from "react-toastify";
 
 export const TreeView: React.FC<TreeViewProps> = ({ jsonInput }) => {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
-
+  const [searchTerm, setsearchTerm] = useState("");
+  const [originalNodes, setOriginalNodes] = useState<Node[]>([]);
+  const { setCenter, fitView } = useReactFlow();
   useEffect(() => {
     if (!jsonInput) {
       setNodes([]);
@@ -50,6 +55,11 @@ export const TreeView: React.FC<TreeViewProps> = ({ jsonInput }) => {
       setEdges([]);
     }
   }, [jsonInput]);
+  useEffect(() => {
+    if (nodes.length && !originalNodes.length) {
+      setOriginalNodes(nodes);
+    }
+  }, [nodes, originalNodes]);
 
   const onNodesChange = useCallback(
     (changes: NodeChange<Node>[]) =>
@@ -67,17 +77,67 @@ export const TreeView: React.FC<TreeViewProps> = ({ jsonInput }) => {
     (params) => setEdges((es) => addEdge(params, es)),
     []
   );
+  const searchHandler = () => {
+    let foundNode: Node | undefined;
+    const updatedNodes = nodes.map((n: Node) => {
+      const isMatch =
+        n.data?.path &&
+        typeof n.data.path === "string" &&
+        n.data.path.toLowerCase() === searchTerm.toLowerCase().trim();
+      if (isMatch) foundNode = n;
+      return {
+        ...n,
+        style: {
+          ...n.style,
+          border: `3px solid ${isMatch ? "#22c55e" : "#ccc"}`,
+          background: isMatch ? "#bbf7d0" : "white",
+        },
+      };
+    });
+    setNodes(updatedNodes);
+    if (foundNode) {
+      const { x, y } = foundNode.position;
+      setCenter(x, y, { zoom: 1.5, duration: 800 });
 
+      toast.success("Match found");
+    } else {
+      setNodes(originalNodes);
+      toast.success("No match found");
+      setCenter(0, 0);
+      fitView({ duration: 800 });
+    }
+  };
+  const changeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setsearchTerm(e.target.value.trim());
+  };
   return (
-    <div style={{ width: "100vw", height: "100vh" }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        fitView
-      />
+    <div className="flex flex-1 flex-col">
+      <div className=" flex text-center w-3xl  ">
+        <input
+          onChange={changeHandler}
+          type="text"
+          className=" outline-none flex-1 border border-blue-700 rounded-md rounded-r-none px-2 py-1 border-r-0 "
+          value={searchTerm}
+        />
+        <button
+          onClick={searchHandler}
+          className="bg-blue-700 text-white border-0 outline-0 text-center px-2 rounded-r-md "
+        >
+          search
+        </button>
+      </div>
+      <div className="flex-1">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          fitView
+        />
+      </div>
+
+      <Toast />
     </div>
   );
 };

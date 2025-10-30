@@ -11,7 +11,7 @@ function App() {
   };
   return (
     <>
-      <div className=" flex  ">
+      <div className="flex h-dvh gap-10 ">
         <JsonInput handleJsonInput={handleJsonInput} />
         <TreeView jsonInput={jsonInput} />
       </div>
